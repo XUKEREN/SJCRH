@@ -58,6 +58,17 @@ use VariantOverlap;
 use DelimitedFileHP;
 use TSOncoDB;
 use OMIM_mim2gene;
+use SimpleVariantDB qw(
+F_VDB_CHR
+F_VDB_POS
+F_VDB_RA
+F_VDB_VA
+F_VDB_GENE
+F_VDB_AA
+F_VDB_CDS
+F_VDB_TRANSCRIPT
+F_VDB_PMID
+);
 
 use constant CLASS_UNKNOWN => "Unknown";
 use constant CLASS_GOLD => "Gold";
@@ -168,8 +179,6 @@ use constant TABIX_BATCH_SIZE_CLINVAR => 2000;
 use constant GERMLINE_ANNOTATION_BOTH_TS_AND_ONCO => 2;
 use constant ACMG_PVS1_PENULTIMATE_EXON_WARN_BASES => 50;
 
-dump_die(\%INC) if $ENV{DEBUG_INC};
-
 my $GERMLINE_USE_MUTATIONASSESSOR_OVER_SIFT = 1;
 
 my $GERMLINE_GSB_LOCKED_TO_COMMITTEE = 1;
@@ -257,11 +266,6 @@ my $NHGRI_BRCA2_NM = "NM_000059.3";
 # NM_000059.3 -> NP_000050.2
 #  - blastp: no gaps, 2 mismatches, very close
 
-
-my @GENE_CLASS_FILES;
-my @GEDI_SNV;
-my @GEDI_INDELS;
-
 my @GEDI_RECURRENT_RESTRICT;
 
 # lists of files to process:
@@ -270,7 +274,6 @@ my @INPUT_CNV_FILES;
 my @INPUT_SV_FILES;
 my @INPUT_GL_FILES;
 
-my $DEBUG_GEDI = 0;
 my $DEBUG_PCGP_INDEL = 0;
 my $REVIEWABLE_FLANKING_BUFFER_NT = 1000;
 my $TRIM_COSMIC_INFO = 1;
@@ -359,7 +362,6 @@ my $COSMIC_HOTSPOT_MIN_CONFIRMED_PATIENTS = 10;
 my $TABIX_INDEL_EQUIVALENCE_DISTANCE = 25;
 
 my $ENABLE_TABIX_COSMIC = 1;
-my $ENABLE_TABIX_GEDI = 1;
 my $ENABLE_TAYLOR_HOTSPOTS = 0;
 my $ENABLE_SOMATIC_EXAC = 1;
 
@@ -428,7 +430,6 @@ my @COMMAND_OPTIONS = (
 	   "-no-pvr",
 	   "-no-nhlbi",
 		       "-no-cosmic",
-		       "-no-gedi",
 
 	   "-in=s",
 	   # single variant report to process (type autodetected)
@@ -450,7 +451,6 @@ my @COMMAND_OPTIONS = (
 #	   "-out=s",
 	   # outfile name (optional)
 
-	   "-gene-class=s" => \@GENE_CLASS_FILES,
 	   "-outfile-fq",
 	   # if specified outfile is written to same dir as infile
 	   # (default: cwd)
@@ -473,11 +473,6 @@ my @COMMAND_OPTIONS = (
 	   # GeDI dump of recurrent sites, e.g.
 	   # /nfs_exports/genomes/1/projects/ClinicalSeq/PCGPRecurrentMutation/GeDI_mutation_20130425.txt
 	   "-gedi-recurrent-restrict=s" => \@GEDI_RECURRENT_RESTRICT,
-
-	   "-gedi-snv=s" => \@GEDI_SNV,
-	   "-gedi-indels=s" => \@GEDI_INDELS,
-	   # GEDI dumps of validated somatic SNVs, used to report
-	   # other known mutations
 
 	   "-cnv=s",
 	   # CNV configuration data, e.g.
@@ -552,8 +547,6 @@ my @COMMAND_OPTIONS = (
 	   "-gl-test=i",
 	   "-gl-gold-cancer-ranges=s",
 	   # raw file
-	   "-gl-gold-cancer-ranges-ger=s",
-	   # with symbols corrected for GENE_EXON_REGION
 
 	   "-gl-grf-debug",
 
@@ -607,6 +600,8 @@ my @COMMAND_OPTIONS = (
            "-hack-clinvar-tabix",
 		       "-hack-taylor",
 
+		       "-hack-mc-db",
+
 	   "-aa-verbose",
 
 	   "-one-list-to-rule-them-all=s",
@@ -656,9 +651,6 @@ my @COMMAND_OPTIONS = (
 	   # will probably be eventually replaced with committee review
 	   # feedback system TBD
 
-	   "-gl-ts=s",
-	   # JZ: tumor suppressor annotation for germline genes
-
 	   "-generate-cosmic-hotspot-list",
 	   "-cosmic-hotspots=s",
 
@@ -703,9 +695,6 @@ my @COMMAND_OPTIONS = (
 	   # if a conflict detected in committee calls,
 	   # warn instead of dying
 
-	   "-clinvar-flatfile=s",
-	   # flatfile export of ClinVar from GEDI
-
 	   "-indel-match-size=i" => \$INDEL_MATCH_SIZE,
 
 	   "-sv-gene-check",
@@ -725,14 +714,12 @@ my @COMMAND_OPTIONS = (
 	   # verify that CNV genes are findable via gene lookup
 	   # interface used in CNV classification
 
-	   "-sv-genes-mapped-to-ger=s",
-
 	   "-map-snv-gold-genes-to-sv",
 
 	   "-refflat-fb=s",
 	   # refFlat file used by FusionBuilder ("sharp" version)
 
-	   "-gold-genes-mapped-to-fb=s",
+#	   "-gold-genes-mapped-to-fb=s",
 
 	   "-erin-genes-cnv",
 	   # report lists of genes used in CNV analysis
@@ -752,15 +739,15 @@ my @COMMAND_OPTIONS = (
 	   "-gl-reportable-genes=s",
 	   # committee-approved reportable germline gene list
 
-	   "-gl-reportable-genes-ger=s",
-	   "-gl-reviewable-genes-ger=s",
+#	   "-gl-reportable-genes-ger=s",
+#	   "-gl-reviewable-genes-ger=s",
            # ...mapped to GENE_EXON_REGION
 
-	   "-gl-reportable-genes-refflat=s",
-	   "-gl-reviewable-genes-refflat=s",
+#	   "-gl-reportable-genes-refflat=s",
+#	   "-gl-reviewable-genes-refflat=s",
            # ...mapped to refFlat (SV / FusionBuilder)
 
-	   "-gl-cnv=s",
+#	   "-gl-cnv=s",
 	   # germline CNV analyis config file
 
 	   "-cnv-germline",
@@ -791,7 +778,6 @@ my @COMMAND_OPTIONS = (
 		       "-committee-export",
 
 		       "-config-checksum=i",
-		       "-config-checksum-old=i",
 		       # 0 = don't report basename of config value in output.
 		       #     What we want most of the time, will make for
 		       #     simpler diffs between research and clinical.
@@ -830,7 +816,6 @@ my @COMMAND_OPTIONS = (
 		       "-known-promoter-sites=s",
 
 		       "-enable-tabix-cosmic=i" => \$ENABLE_TABIX_COSMIC,
-		       "-enable-tabix-gedi=i" => \$ENABLE_TABIX_GEDI,
 		       "-enable-taylor-hotspots=i" => \$ENABLE_TAYLOR_HOTSPOTS,
 
 		       "-enable-known-promoter-regions=i" => \$ENABLE_KNOWN_PROMOTER_REGIONS,
@@ -863,6 +848,11 @@ my @COMMAND_OPTIONS = (
 		       "-enable-cnv-gsm=i" => \$CNV_GSM,
 
 		       "-clinvar-min-gold-stars=i" => \$CLINVAR_MIN_GOLD_STARS_TO_TRUST,
+		       "-sqlite=s",
+
+		       "-user-variants=s",
+		       "-user-blacklist=s",
+		       "-hack-user-variants",
 		      );
 
 GetOptions(\%FLAGS, @COMMAND_OPTIONS);
@@ -906,10 +896,7 @@ my %variant_class_inframe_indel = (
 				   "proteindel" => 1,
 				  );
 
-if ($FLAGS{"dump-gedi"}) {
-  dump_gedi();
-  exit(0);
-} elsif ($FLAGS{"erin-genes-sv"}) {
+if ($FLAGS{"erin-genes-sv"}) {
   erin_genes_sv();
   exit(0);
 } elsif ($FLAGS{"dump-hgmd"}) {
@@ -1016,6 +1003,13 @@ if ($FLAGS{"dump-gedi"}) {
   init_infiles();
   hack_taylor();
   exit(0);
+} elsif ($FLAGS{"hack-mc-db"}) {
+  init_infiles();
+  my $vm = get_vm_mc_db("-name" => "ALSoD");
+
+  die $vm->find_aa_specific_codon("-gene" => "FUS", "-aa" => "K510N");
+
+  exit(0);
 } elsif ($FLAGS{"hack-1kg"}) {
   init_infiles();
   thousand_genomes_hack();
@@ -1064,6 +1058,10 @@ if ($FLAGS{"dump-gedi"}) {
   exit(0);
 } elsif ($FLAGS{hack18}) {
   hack18();
+  exit(0);
+} elsif ($FLAGS{"hack-user-variants"}) {
+  init_infiles();
+  hack_user_variants();
   exit(0);
 } elsif (my $mf = $FLAGS{"show-isoforms-used"}) {
   show_isoforms_used($mf);
@@ -1134,9 +1132,6 @@ if ($FLAGS{"dump-gedi"}) {
   exit(0);
 } elsif ($FLAGS{"committee-export"}) {
   committee_export();
-  exit(0);
-} elsif (exists $FLAGS{"config-checksum-old"}) {
-  config_checksum_old($FLAGS{"config-checksum-old"});
   exit(0);
 } elsif (exists $FLAGS{"config-checksum"}) {
   load_genome_config("-checksum" => $FLAGS{"config-checksum"});
@@ -1268,29 +1263,7 @@ sub run_somatic_snv_indel {
     $gsm_gold_genes->add_gene("-gene" => $g);
   }
 
-  #
-  #  PCGP recurrent sites:
-  #
-  my $gedi_recurrents;
-  my $gedi_snvs_somatic;
-  my $gedi_indels_somatic;
   ram_debug("somatic_snv/start");
-  if ($FLAGS{"no-gedi"}) {
-    printf STDERR "DEBUG: GeDI disabled\n";
-    $gedi_recurrents = {};
-    $gedi_snvs_somatic = {};
-    $gedi_indels_somatic = {};
-  } else {
-    printf STDERR "loading GeDI...\n";
-    $gedi_recurrents = load_gedi_recurrent();
-    if ($FLAGS{"tabix-gedi"}) {
-      $gedi_snvs_somatic = $gedi_indels_somatic = "do_not_use";
-    } else {
-      $gedi_snvs_somatic = load_gedi_snvs_somatic();
-      $gedi_indels_somatic = load_gedi_indels_somatic();
-    }
-  }
-  ram_debug("somatic_snv/after gedi");
 
   #
   #  load COSMIC sites:
@@ -1591,7 +1564,6 @@ sub run_somatic_snv_indel {
       }
 
       my $gedi_snv_hits;
-      my $gedi_indel_hits;
       my $gedi_recurrent;
 
       #    my $variant_class = lc($row->{Class} || die "no Class field");
@@ -1636,18 +1608,14 @@ sub run_somatic_snv_indel {
 	  die "unhandled variant class " . $variant_class unless defined $is_truncating;
 	}
 
-	my $key = get_gedi_key($row);
-	if ($FLAGS{"tabix-gedi"}) {
-	  $gedi_snv_hits = $row->{$FIELD_GEDI_TABIX};
-	} else {
-	  $gedi_snv_hits = $gedi_snvs_somatic->{$key};
-	  $gedi_indel_hits = $gedi_indels_somatic->{$key};
-	}
-	$gedi_recurrent = $gedi_recurrents->{$key};
-	if ($DEBUG_GEDI) {
-	  printf STDERR "checking PCGP/GeDI %s, hit=%s\n", $key, $gedi_recurrent ? 1 : 0;
-	  printf STDERR "PCGP indel %s, hit=%s\n", $key, $gedi_indel_hits ? 1 : 0;
-	}
+	#
+	#  PCGP main and recurrent sites:
+	#
+	$gedi_snv_hits = $row->{$FIELD_GEDI_TABIX};
+        $gedi_recurrent = $vm_pcgp_somatic->find_snv("-sj" => $row);
+	$gedi_recurrent = $vm_pcgp_somatic->find_literal_variant("-sj" => $row) unless $gedi_recurrent;
+	# for SJ-to-SJ lookup, require indel position annotations
+	# to match perfectly
 
 	my $cosmic_recurrent;
 	if ($new_cosmic) {
@@ -1746,7 +1714,7 @@ sub run_somatic_snv_indel {
 	  push @where, "PCGP" if $gedi_recurrent;
 	  push @reasons, sprintf "event=recurrent mutation (%s)", join ",", @where;
 	} elsif ($cosmic_snv_hits or $row->{$FIELD_COSMIC} or
-		 $gedi_snv_hits or $gedi_indel_hits) {
+		 $gedi_snv_hits) {
 	  #
 	  # Other known mutation (COSMIC or PCGP)
 	  #
@@ -1761,7 +1729,7 @@ sub run_somatic_snv_indel {
 	  }
 	  my @where;
 	  push @where, "COSMIC" if $cosmic_snv_hits or $row->{$FIELD_COSMIC};
-	  push @where, "PCGP" if $gedi_snv_hits or $gedi_indel_hits;
+	  push @where, "PCGP" if $gedi_snv_hits;
 	  push @reasons, sprintf "event=other known mutation (%s)", join ",", @where;
 	} elsif (!$medal) {
 	  #
@@ -1868,8 +1836,8 @@ sub run_somatic_snv_indel {
 	}
       }
 
-      if ($gedi_snv_hits or $gedi_indel_hits) {
-	my $set = $gedi_snv_hits || $gedi_indel_hits;
+      if ($gedi_snv_hits) {
+	my $set = $gedi_snv_hits;
 
 	my %projects = map {$_, 1} grep {$_} map {$_->{official_project}} @{$set};
 	die "no projects??" unless %projects;
@@ -2005,28 +1973,6 @@ sub flatfile_to_hash {
   return { map {$_, 1} @{read_simple_file($_[0])} };
 }
 
-sub load_gene_class_files {
-  die "no -gene-class files!" unless @GENE_CLASS_FILES;
-  die "-gene-class uses multiple files" unless @GENE_CLASS_FILES > 1;
-  my %gene2class;
-  foreach my $fn (@GENE_CLASS_FILES) {
-    my $df = new DelimitedFile(
-			       "-file" => $fn,
-			       "-headers" => 1,
-			      );
-    while (my $row = $df->get_hash()) {
-      my $gene = get_field($row, "Gene");
-      my $class = get_field($row, "Class");
-      next if (not($gene =~ /\w/) and not($class =~ /\w/));
-      # blank lines
-      die $fn unless $gene and $class;
-      die "duplicate entry for $gene" if $gene2class{$gene};
-      $gene2class{$gene} = $class;
-    }
-  }
-  return \%gene2class;
-}
-
 sub parse_gene_class {
   my ($string) = @_;
   my @things = split /\+/, $string;
@@ -2153,42 +2099,6 @@ sub get_gedi_recurrent_restrict {
     close FRTMP;
   }
   return \%wanted;
-}
-
-sub load_gedi_recurrent {
-  my (%options) = @_;
-  my $fn = $FLAGS{"gedi-recurrent"} || die "-gedi-recurrent";
-  my $wanted = get_gedi_recurrent_restrict();
-  my $gsm = new_gsm_lite();
-  foreach my $g (keys %{$wanted}) {
-    # safer than hash lookup: can adapt to gene symbol changes
-    $gsm->add_gene("-gene" => $g);
-  }
-
-  my $df = new DelimitedFile("-file" => $fn,
-			     "-headers" => 1,
-			    );
-  my %gedi;
-  # save everything, later code responsible for gold/silver check
-  my $count = 0;
-  while (my $row = $df->get_hash()) {
-    my $gene = $row->{Gene};
-
-    next unless $gsm->find($gene);
-
-    my $key = join ".", @{$row}{qw(Chr Pos RefAllele MutAllele)};
-#    printf STDERR "gedi %s %s\n", $gene, $key;
-
-    dump_die($row, "$key has chr") if $key =~ /chr/;
-    printf STDERR "saving GeDI %s %s\n", $gene, $key if $DEBUG_GEDI;
-    push @{$gedi{$key}}, $row;
-    # save all rows, variant might appear in multiple diseases
-    # e.g. 20.31022592.C.T appears in AML, HGG, EPD
-    $count++;
-  }
-  printf STDERR "somatic recurrent variant count: %d\n", $count;
-  return \%gedi;
-
 }
 
 sub get_outfile {
@@ -2417,156 +2327,6 @@ sub patch_pubmed_info {
   }
 }
 
-sub dump_gedi {
-  my $dbi = get_dbi_gedi() || die;
-  die "see gedi_dump.pl";
-  #  my $dbi = get_dbi_gedi("-host" => "prod") || die;
-  # which server contains PCGP variants?
-  my @views = (
-	       "indel_find_t1",
-	       # VALID SOMATIC indels
-	       "snp_find_t1",
-	       # VALID SOMATIC SNVs, tier 1
-	       "snp_find_t2",
-	       # VALID SOMATIC SNVs, tier 2
-	       "snp_find_t3",
-	       # VALID SOMATIC SNVs, tier 3
-	      );
-
-  foreach my $view (@views) {
-    printf STDERR "exporting %s...\n", $view;
-    export_query_to_flatfile("-dbi" => $dbi,
-			     "-table" => $view);
-  }
-  $dbi->disconnect();
-}
-
-sub load_gedi_snvs_somatic {
-  die "-gedi-snv" unless @GEDI_SNV;
-  die "-gedi-snv expects multiple files" unless @GEDI_SNV > 1;
-  my %snvs;
-  foreach my $fn (@GEDI_SNV) {
-    my $df = new DelimitedFile(
-			       "-file" => $fn,
-			       "-headers" => 1,
-			      );
-    while (my $row = $df->get_hash()) {
-      if ($row->{origin} eq "SOMATIC") {
-	my $key = get_gedi_key_gedi($row);
-	push @{$snvs{$key}}, $row;
-      } elsif (my $origin = $row->{origin}) {
-	# sometimes blank
-	dump_die($row, "broken origin field in $fn") unless $origin eq "GERMLINE";
-      }
-    }
-  }
-  return \%snvs;
-}
-
-sub load_gedi_indels_somatic {
-  die "-gedi-indels" unless @GEDI_INDELS;
-  my %indels;
-  foreach my $fn (@GEDI_INDELS) {
-    my $df = new DelimitedFile(
-			       "-file" => $fn,
-			       "-headers" => 1,
-			      );
-    while (my $row = $df->get_hash()) {
-      my $key = get_gedi_key_gedi($row);
-      if ($row->{origin} eq "SOMATIC") {
-	printf STDERR "stash PCGP indel %s\n", $key if $DEBUG_PCGP_INDEL;
-	push @{$indels{$key}}, $row;
-      } else {
-	die unless $row->{origin} eq "GERMLINE";
-      }
-    }
-  }
-  return \%indels;
-}
-
-sub get_gedi_germline_vm {
-  # get VariantMatcher for all PCGP germline variants (SNVs and indels)
-  die "-gedi-snv" unless @GEDI_SNV;
-  die "-gedi-indels" unless @GEDI_INDELS;
-  my $vm = get_new_vm();
-  my @files = (@GEDI_SNV, @GEDI_INDELS);
-  if (0) {
-    print STDERR "DEBUG, indels only!\n";
-    @files = @GEDI_INDELS;
-  }
-  foreach my $fn (@files) {
-    printf STDERR "parsing %s...\n", $fn;
-    my $df = new DelimitedFile(
-			       "-file" => $fn,
-			       "-headers" => 1,
-			      );
-    while (my $row = $df->get_hash()) {
-      my $key = get_gedi_key_gedi($row);
-      if ($row->{origin} eq "GERMLINE") {
-	my $ra = $row->{reference_allele};
-	unless ($ra) {
-	  printf STDERR "ERROR: blank reference_allele\n";
-	  next;
-	}
-
-	my $va = $row->{non_reference_allele} || die;
-	die "say what?" if $ra =~ /\-/ and $va =~ /\-/;
-
-	#
-	#  add nucleotide-based entry:
-	#
-	if ($ra =~ /\-/) {
-	  $vm->add_insertion(
-			     "-row" => $row,
-			     "-gedi" => 1
-			    );
-	} elsif ($va =~ /\-/) {
-	  $vm->add_deletion(
-			    "-row" => $row,
-			    "-gedi" => 1
-			   );
-	} else {
-	  $vm->add_snv(
-		       "-row" => $row,
-		       "-gedi" => 1,
-		      );
-	}
-
-	#
-	#  add AA-based entry:
-	#
-	my $gene = $row->{gene} || die;
-	my $variant = $row->{variant} || die;
-	my $aa = $variant;
-	my $lookup = $gene . "_";
-	if (index($aa, $lookup) == 0) {
-	  $aa = substr($aa, length($lookup));
-	  # lo-tech but safest, might confounding asterisks/underscores
-	  $vm->add_aa(
-		      "-gene" => $gene,
-		      "-aa" => $aa,
-		      "-row" => $row
-		     );
-	} else {
-	  die "can't strip $gene from $variant";
-	}
-
-      } else {
-	die unless $row->{origin} eq "SOMATIC";
-      }
-    }
-  }
-  return $vm;
-}
-
-sub get_gedi_key_gedi {
-  my ($row) = @_;
-  my @f = @{$row}{qw(chromosome pos reference_allele non_reference_allele)};
-  die unless grep {$_} @f == 4;
-  my $key = join ".", @f;
-  return $key;
-}
-
 sub load_config_file {
   # pre-populate command line params from configuration file
   my @things;
@@ -2645,6 +2405,7 @@ sub init_infiles {
 }
 
 sub run_svs_old {
+  # DELETE ME
   my $svc = $FLAGS{"sv"} || die "specify -sv";
   my $lines = read_simple_file($svc);
   # primary SVs
@@ -3312,6 +3073,19 @@ sub run_germline {
   }
   ram_debug("germline_snv/after ASU TERT");
 
+  ram_debug("germline_snv/before ALSoD");
+  my $vm_alsod = get_vm_mc_db("-name" => "ALSoD");
+  ram_debug("germline_snv/after ALSoD");
+
+  my $vm_ikzf1 = get_vm_mc_db("-name" => "IKZF1");
+
+  my $vm_tp53_functional = get_vm_mc_db("-name" => "TP53_functional");
+
+  my $vm_user_variants = get_vm_user_variants("-param" => "user-variants");
+  # optional: user variants to medal against
+  my $vm_user_blacklist = get_vm_user_variants("-param" => "user-blacklist");
+  # optional: user variants that should not receive a medal
+
   #
   #  process reports:
   #
@@ -3464,6 +3238,7 @@ sub run_germline {
 	delete $row->{$INTERNAL_FIELD_NO_POPULATION_FILTER};
       }
 
+      my $user_blacklisted;
       my $panel_decision = "";
 
       my $is_gold_gene = 0;
@@ -4070,6 +3845,103 @@ sub run_germline {
 				 "-genomic-lookup" => 1,
 				);
 
+	#
+	#  ALSoD:
+	#
+	$medal = assign_aa_match(
+				 "-vm" => $vm_alsod,
+				 "-row" => $row,
+				 "-is-silent" => $is_silent_intron_utr,
+				 "-silent-allowed" => 0,
+				 "-protect" => 0,
+#				 "-transcript-handshake" => $FIELD_REFSEQ,
+				 "-current-medal" => $medal,
+				 "-reasons" => \@reasons,
+				 "-label" => "ALSoD",
+				 "-novel-flag" => \$is_novel_these_db,
+				 "-medal-perfect" => CLASS_SILVER,
+				 "-medal-codon" => CLASS_SILVER,
+				 "-medal-site" => CLASS_BRONZE,
+				 "-genomic-lookup" => 1,
+				);
+
+	#
+	#  IKZF1:
+	#
+	$medal = assign_aa_match(
+				 "-vm" => $vm_ikzf1,
+				 "-row" => $row,
+				 "-is-silent" => $is_silent_intron_utr,
+				 "-silent-allowed" => 0,
+				 "-protect" => 0,
+#				 "-transcript-handshake" => $FIELD_REFSEQ,
+				 "-current-medal" => $medal,
+				 "-reasons" => \@reasons,
+				 "-label" => "IKZF1_deleterious",
+				 "-novel-flag" => \$is_novel_these_db,
+				 "-medal-perfect" => CLASS_SILVER,
+				 "-medal-codon" => CLASS_SILVER,
+				 "-medal-site" => CLASS_BRONZE,
+				 "-genomic-lookup" => 1,
+				 "-pubmed-list" => \@pmid,
+				 "-pubmed-field" => F_VDB_PMID()
+				);
+
+	#
+	#  TP53 functional data:
+	#
+	if (my $hits = $vm_tp53_functional->find_snv("-sj" => $row)) {
+	  push @reasons, sprintf "TP53_functional_data=%s", join ",", @{$hits->[0]}{qw(
+											WAF1_Act
+											MDM2_Act
+											BAX_Act
+											_14_3_3_s_Act
+											AIP_Act
+											GADD45_Act
+											NOXA_Act
+											p53R2_Act
+
+											Giac_A549_WT_Nut_norm
+											Giac_A549_Null_Nut_norm
+											Giac_A549_Null_Eto_norm
+
+											Kolt_RFS_H1299_norm
+										     )
+										  };
+
+	  push @reasons, sprintf "TP53_functional_call=%s", $hits->[0]->{functional_call};
+	}
+
+	$medal = assign_aa_match(
+				 "-vm" => $vm_user_variants,
+				 "-row" => $row,
+				 "-is-silent" => $is_silent_intron_utr,
+				 "-silent-allowed" => 0,
+				 "-protect" => 0,
+#				 "-transcript-handshake" => $FIELD_REFSEQ,
+				 "-current-medal" => $medal,
+				 "-reasons" => \@reasons,
+				 "-label" => "user_variant",
+				 "-novel-flag" => \$is_novel_these_db,
+				 "-medal-perfect" => CLASS_GOLD,
+				 "-medal-codon" => CLASS_SILVER,
+				 "-medal-site" => CLASS_SILVER,
+				 "-genomic-lookup" => 1,
+#				 "-pubmed-list" => \@pmid,
+#				 "-pubmed-field" => F_VDB_PMID()
+				);
+
+	if ($vm_user_blacklist->find_snv("-sj" => $row) or
+	    $vm_user_blacklist->find_indel(
+					   "-sj" => $row,
+					   "-match-basic-type" => 1,
+					   "-match-size" => 1,
+					   "-fuzz-bases" => 0
+					  )) {
+	  $user_blacklisted = 1;
+	}
+
+
 	if ($is_rare and not($is_silent_intron_utr)) {
 	  #
 	  #  deleterious predictions: call for rare non-silent variants only
@@ -4123,6 +3995,12 @@ sub run_germline {
 	# receive medals, unless they have received a medal based on
 	# a match to a protected/gold database (e.g. TP53)
       }
+
+      if ($user_blacklisted) {
+	$medal = CLASS_UNKNOWN;
+	push @reasons, "user_blacklisted";
+      }
+
 
       if ($GERMLINE_GSB_LOCKED_TO_COMMITTEE and $committee_call_medal) {
 	# if we have a GSB call based on a committee call, this should
@@ -4492,7 +4370,7 @@ sub parse_iarc {
     } elsif ($genomic =~ /:g\.\?$/) {
       $blank_genomic++;
     } else {
-      printf STDERR "can't parse $genomic, SKIPPING\n";
+      printf STDERR "can't parse $genomic, SKIPPING\n" unless $genomic =~ /\?/;
     }
   }				# $row
 
@@ -6145,6 +6023,7 @@ sub dump_raw_lists {
   #
   if ($ENABLE_CLINVAR) {
 #    my $ff_cv = $FLAGS{"clinvar-gedi-flatfile"} || die "-clinvar-gedi-flatfile";
+    die "clinvar flatfile obsolete";
     my $ff_cv = $FLAGS{"clinvar-flatfile"} || die "-clinvar-flatfile";
     printf STDERR "processing ClinVar (%s)...\n", $ff_cv;
 
@@ -8235,57 +8114,6 @@ sub get_sjpi {
   return $sjpi;
 }
 
-sub get_gl_ts_list {
-  #
-  # get tumor suppressor list for germline classification
-  #
-  my $gl_ts = $FLAGS{"gl-ts"} || die "-gl-ts";
-  my $df = new DelimitedFile(
-			     "-file" => $gl_ts,
-			     "-headers" => 1,
-			    );
-
-  my %is_ts;
-  #
-  #  primary classifications for germline:
-  #
-  while (my $row = $df->get_hash()) {
-    my $gene = $row->{"Gene"} || die;
-    $gene =~ s/\s+$//;
-    die if $gene =~ /\s/;
-    my $v = $row->{TruncationGold} || die;
-    my $flag;
-    if ($v eq "Y") {
-      $flag = 1;
-    } elsif ($v eq "N") {
-      $flag = 0;
-    } elsif ($v eq "2") {
-      # both gain and loss of function important
-      $flag = 2;
-    } else {
-      die $v;
-    }
-    #    printf STDERR "primary %s %s\n", $gene, $flag;
-    $is_ts{$gene} = $flag;
-  }
-
-  #
-  #  secondary classifications from somatic classification:
-  #
-  my $gene2class = load_gene_class_files();
-  foreach my $gene (keys %{$gene2class}) {
-    my $class = $gene2class->{$gene};
-    my ($is_ts, $is_recurrent) = parse_gene_class($class);
-    #    printf "%s %s\n", $gene, $class;
-    if (!exists $is_ts{$gene}) {
-      my $flag = $is_ts ? 1 : 0;
-      $is_ts{$gene} = $flag;
-    }
-  }
-
-  return \%is_ts;
-}
-
 sub get_vm_rb1 {
   my $infile = $FLAGS{"rb1-flatfile"} || die "-rb1-flatfile";
   my $df = new DelimitedFile(
@@ -8574,7 +8402,7 @@ sub get_vm_cosmic_hotspots {
 	$import{skipped_misc}++;
       }
     } else {
-      printf STDERR "ERROR: can't parse $cds\n";
+#      printf STDERR "ERROR: can't parse $cds\n";
     }
   }
 
@@ -9140,6 +8968,11 @@ sub add_nhlbi_frequency_tabix {
 sub get_vm_pcgp_somatic {
   my $fn = $FLAGS{"gedi-recurrent"} || die "-gedi-recurrent";
   my $wanted = get_gedi_recurrent_restrict();
+  my $gsm = new_gsm_lite();
+  foreach my $g (keys %{$wanted}) {
+    # safer than hash lookup: can adapt to gene symbol changes
+    $gsm->add_gene("-gene" => $g);
+  }
 
   my $df = new DelimitedFile("-file" => $fn,
 			     "-headers" => 1,
@@ -9153,7 +8986,8 @@ sub get_vm_pcgp_somatic {
 
     #    dump_die($row);
     my $gene = $row->{Gene};
-    next unless $wanted->{$gene};
+#    next unless $wanted->{$gene};
+    next unless $gsm->find($gene);
 
     my $chr = $row->{Chr} || die;
     my $pos = $row->{Pos} || die;
@@ -10513,49 +10347,6 @@ sub erin_genes_sv {
   }
 }
 
-sub generate_germline_cnv_config_OLD {
-  my $gold_genes = read_simple_file($FLAGS{"gl-reportable-genes"} || die "-gl-reportable-genes");
-  my $ts_genes = get_gl_ts_list();
-
-  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-  my $outfile = sprintf "CNVCheck_germline_%d_%02d_%02d.txt", 1900+$year, $mon + 1, $mday;
-
-  my $wf = new WorkingFile($outfile);
-  my $fh = $wf->output_filehandle();
-  my $errors = 0;
-  my $gsm = get_gsm_ger();
-
-  foreach my $gene (@{$gold_genes}) {
-    if ($gsm->contains($gene)) {
-      # OK
-    } elsif (my $alt = $gsm->resolve("-symbol" => $gene)) {
-      printf STDERR "mapping %s to %s\n", $gene, $alt;
-      $gene = $alt;
-      # annotation file should have been built with the equivalent
-      # symbol as well
-    } else {
-      printf STDERR "ERROR: symbol %s is not in GENE_EXON_REGION\n", $gene;
-      $errors++;
-    }
-
-    my $ts = $ts_genes->{$gene};
-    if (defined $ts) {
-      my $type = $ts ? "Del" : "Amp";
-      my $annot = "";
-      printf $fh "%s\n", join "\t", $gene, $type, $annot;
-      printf $fh "%s\n", join "\t", $gene, "Amp", $annot if $ts == GERMLINE_ANNOTATION_BOTH_TS_AND_ONCO;
-    } else {
-      printf STDERR "ERROR: no TS/oncogene status for %s\n", $gene;
-      $errors++;
-    }
-  }
-  if ($errors) {
-    die "errors, can't build config file";
-  } else {
-    $wf->finish();
-  }
-}
-
 sub generate_germline_cnv_config {
   #
   # new version using TSOncoDB
@@ -10723,6 +10514,7 @@ sub sanity_check_cosmic_somatic_genes_in_main_lists {
 }
 
 sub run_cnvs_integrated_old {
+  # DELETE ME
   #
   # CNV classification for either somatic or germline.
   #
@@ -11899,144 +11691,6 @@ sub get_dbi_clinical {
   return $dbi;
 }
 
-sub config_checksum_old {
-  #
-  #  generate configuration checksums, e.g. to ensure that
-  #  resource files are the same on research and clinical
-  #
-  my ($include_basename) = @_;
-  die "no -genome specified" unless $FLAGS{genome};
-
-  my $clr = new CommandLineRebuilder("-parameters" => \@COMMAND_OPTIONS,
-				     "-flags" => \%FLAGS);
-
-  my %ignore_params = map {$_, 1} (
-				   "-config",
-				   "-fb-column",
-				   "-rsc",
-				   "-indel-match-size",
-				   "-config-checksum",
-				   "-genome",
-
-				   # HACKS:
-				   "-fasta-dir",
-				   # ignore this one because research
-				   # has extra symlink files, etc.
-				  );
-
-  my %size_params = map {$_, 1} (
-				 "-dbsnp",
-				 "-exac",
-				);
-
-  my %glob_size_params = (
-			  "-gene-exon-region-dir" => "chr*region.txt",
-			 );
-
-  my %file_params = map {$_, 1} (
-				 "-gl-current-committee-medals",
-				 "-gold",
-				 "-silver",
-				 "-gene-class",
-				 "-genes-manual",
-				 "-cosmic-cleaned",
-				 "-cosmic",
-				 "-cosmic-gold",
-				 "-cosmic-silver",
-				 "-gedi-recurrent",
-				 "-gedi-recurrent-restrict",
-				 "-gedi-recurrent-snv",
-				 "-gedi-snv",
-				 "-gedi-indels",
-				 "-cnv",
-				 "-cnv-annotations",
-				 "-sv",
-				 "-sv-manual",
-				 "-iarc-tp53-germline",
-				 "-iarc-tp53-somatic",
-				 "-hgmd-dm-mp-all",
-				 "-asu-tert",
-				 "-gl-gold-cancer-ranges",
-				 "-gl-gold-cancer-ranges-ger",
-				 "-gl-arup",
-				 "-gl-umd-flatfile",
-				 "-rb1-flatfile",
-				 "-uniprot-idmapping",
-				 "-gl-bad-snv",
-				 "-gl-ts",
-				 "-cosmic-hotspots",
-				 "-gl-pcgp-population",
-				 "-gl-apc-flatfile",
-				 "-gl-msh2-flatfile",
-				 "-nhgri-brca1",
-				 "-nhgri-brca2",
-				 "-clinvar-flatfile",
-				 "-sv-genes-mapped-to-ger",
-				 "-gold-genes-mapped-to-fb",
-				 "-sv-silver-genes-fb",
-				 "-gl-reportable-genes",
-				 "-gl-cnv",
-
-				 "-preferred-isoforms",
-				 # this one is known to be different
-				 # on clinical vs. research; ignore?
-
-
-
-				);
-
-  my @all_flags = grep {not(ref $_)} @COMMAND_OPTIONS;
-  foreach my $flag (@all_flags) {
-    #
-    # iterate through all possible specified parameters.
-    #
-    printf STDERR "flag %s\n", $flag;
-    $flag =~ s/\=.*//;
-    my $values = $clr->get_values_for("-param" => $flag);
-    if ($values) {
-      # this parameter has been specified
-      if ($ignore_params{$flag}) {
-	# skip
-      } elsif ($file_params{$flag}) {
-	# parameter specifies a file or set of files
-	foreach my $fn (@{$values}) {
-	  my $md5 = md5_file($fn);
-	  my @things = ($flag, $md5);
-	  push @things, $include_basename == 2 ? $fn : basename($fn) if $include_basename;
-	  printf "%s\n", join "\t", @things;
-	}
-      } elsif ($size_params{$flag}) {
-	foreach my $fn (@{$values}) {
-	  die "broken file $fn" unless -e $fn;
-	  my $fake_md5 = -s $fn;
-	  my @things = ($flag, $fake_md5);
-	  push @things, $include_basename == 2 ? $fn : basename($fn) if $include_basename;
-	  printf "%s\n", join "\t", @things;
-	}
-      } elsif (my $pattern = $glob_size_params{$flag}) {
-	foreach my $path (@{$values}) {
-	  die "broken path $path" unless -d $path;
-	  my @files = glob($path . "/" . $pattern);
-	  die "no matches for $pattern in $path" unless @files;
-	  foreach my $fn (@files) {
-	    my $fake_md5 = -s $fn;
-	    my @things = ($flag . "." . basename($fn), $fake_md5);
-	    push @things, $include_basename == 2 ? $fn : basename($fn) if $include_basename;
-	    printf "%s\n", join "\t", @things;
-	  }
-	}
-      } else {
-	printf "values=%s\n", join "\n", @{$values};
-	die "unhandled parameter $flag";
-      }
-    } else {
-#      printf STDERR "WARNING: parameter %s not specified\n", $flag;
-      # don't warn as there are lots of parameters that are not
-      # configuration related
-    }
-  }
-}
-
 sub export_for_clinical {
   my $param = $FLAGS{"export-for-clinical"};
   my $clr = new CommandLineRebuilder("-parameters" => \@COMMAND_OPTIONS,
@@ -12743,13 +12397,10 @@ sub load_genome_config {
 				   CLINCLS_GL_ARUP_FILE
 				   CLINCLS_HGMD_CLASSIFICATION_EVERYTHING_FILE
 				   CLINCLS_COSMIC_MUTANT_FILE
-				   CLINCLS_GL_CNV
-				   CLINCLS_GOLD_GENES_MAPPED_TO_FB
 				   CLINCLS_GL_BAD_SNV_LIST_FILE
 				   CLINCLS_COSMIC_SNV_INDEL_PUBMED_FILE
 				   CLINCLS_CANCER_RELATED_GENES_FILE
 				   CLINCLS_NHGRI_BRCA2_FILE
-				   CLINCLS_GL_REPORTABLE_GENE_ANNOTATION_FILE
 				   CLINCLS_GERMLINE_REPORTABLE_GENES
 				   CLINCLS_CANCER_GENE_CENSUS_DELETION_FILE
 				   CLINCLS_COSMIC_HOTSPOTS_FILE
@@ -12759,17 +12410,14 @@ sub load_genome_config {
 				   CLINCLS_IARC_TP53_SOMATIC_FILE
 				   CLINCLS_IARC_TP53_GERMLINE_FILE
 				   GENE_TRANSCRIPT_MATRIX
-				   CLINCLS_CLINVAR_VARIANTS_FLAT_FILE
 				   CLINCLS_GL_PCGP_POPULATION_FILE
 				   CLINCLS_GOLD_GENE_LIST_FILE
 				   GL_APC_FLAT_FILE
 				   CLINCLS_UNIPROT_ID_MAPPING_GZIP_FILE
-				   CLINCLS_GOLD_CANCER_RANGES_GER
 				   GL_MSH2_FLAT_FILE
 				   CLINCLS_GOLD_SNV_INDEL_FILE
 				   CLINCLS_SV_CHECK_FILE
 CLINCLS_SV_SILVER_GENES_FB
-CLINCLS_CLINVAR_SV_GENES_MAPPED_TO_GER
 CLINCLS_GENES_MANUAL_FILE
 CLINCLS_SILVER_SNV_INDEL_FILE
 CLINCLS_SILVER_GENE_LIST_FILE
@@ -12779,23 +12427,12 @@ CLINCLS_NON_CANCER_GENE_SJ_MUTATION_FILE
 CLINCLS_COMMITTEE_MEDALS_FILE
 CLINCLS_COMMITTEE_MEDALS_FILE_SET2
 CLINCLS_COMMITTEE_MEDALS_FILE_CSITH
-CLINCLS_GEDI_INDEL_FIND_T1_FILE
-CLINCLS_GEDI_SNP_FIND_T1_FILE
-CLINCLS_GEDI_SNP_FIND_T2_FILE
-CLINCLS_GEDI_SNP_FIND_T3_FILE
-CLINCLS_CANCER_GENE_LIST_FILE
-CLINCLS_NON_CANCER_GENE_LIST_HC_FILE
-CLINCLS_NON_CANCER_GENE_LIST_LC_FILE
 CLINCLS_PRIVATE_VARIANTS_FILE
-
-CLINCLS_GERMLINE_REPORTABLE_GENES_GER
-CLINCLS_GERMLINE_REVIEWABLE_GENES_GER
-CLINCLS_GERMLINE_REPORTABLE_GENES_REFFLAT
-CLINCLS_GERMLINE_REVIEWABLE_GENES_REFFLAT
 
 CLINCLS_COSMIC_PUBMED_SUMMARY
 CLINCLS_PROMOTER_REGIONS
 CLINCLS_PROMOTER_SITES
+CLINCLS_MEDAL_CEREMONY_DB
 				);
 
   # files to MD5 contents of
@@ -12811,15 +12448,7 @@ CLINCLS_PROMOTER_SITES
 		      );
   # sizes of files hit by glob patterns
 
-  my %var_ignore = map {$_, 1} (
-				"CLINCLS_GEDI_SNP_FIND_T1_FILE",
-				"CLINCLS_GEDI_SNP_FIND_T2_FILE",
-				"CLINCLS_GEDI_SNP_FIND_T3_FILE",
-				"CLINCLS_GEDI_INDEL_FIND_T1_FILE"
-				# obsolete: replaced by tabix versions
-			       );
-  # FASTA_CHR
-  # ignore for checksum purposes: research has extra files/symlinks
+  my %var_ignore;
 
   if ($genome) {
     my $config_genome = TdtConfig::readConfig('genome', $genome) || die "can't find config for $genome";
@@ -12861,7 +12490,6 @@ CLINCLS_PROMOTER_SITES
     # same preferred isoforms file used everywhere else
 
     $single{"gl-bad-snv"} = "CLINCLS_GL_BAD_SNV_LIST_FILE";
-    $single{"gl-ts"} = "CLINCLS_GL_REPORTABLE_GENE_ANNOTATION_FILE";
     $single{"rb1-flatfile"} = "CLINCLS_RB1_FLAT_FILE";
 
     $single{"gl-pcgp-population"} = "CLINCLS_GL_PCGP_POPULATION_FILE";
@@ -12873,27 +12501,19 @@ CLINCLS_PROMOTER_SITES
     $single{"gl-msh2-flatfile"} = "GL_MSH2_FLAT_FILE";
     $single{"hgmd-dm-mp-all"} = "CLINCLS_HGMD_CLASSIFICATION_EVERYTHING_FILE";
 
-    $single{"clinvar-flatfile"} = "CLINCLS_CLINVAR_VARIANTS_FLAT_FILE";
-    $single{"sv-genes-mapped-to-ger"} = "CLINCLS_CLINVAR_SV_GENES_MAPPED_TO_GER";
-    $single{"gold-genes-mapped-to-fb"} = "CLINCLS_GOLD_GENES_MAPPED_TO_FB";
+#    $single{"clinvar-flatfile"} = "CLINCLS_CLINVAR_VARIANTS_FLAT_FILE";
     $single{"sv-silver-genes-fb"} = "CLINCLS_SV_SILVER_GENES_FB";
-    $single{"gl-cnv"} = "CLINCLS_GL_CNV";
-    $single{"gl-gold-cancer-ranges-ger"} = "CLINCLS_GOLD_CANCER_RANGES_GER";
     $single{"gl-reportable-genes"} = "CLINCLS_GERMLINE_REPORTABLE_GENES";
 
     $single{"fasta-dir"} = "FASTA_CHR";
     $single{"private-variants"} = "CLINCLS_PRIVATE_VARIANTS_FILE";
     $single{"tabix-dbnsfp-pos"} = "DBNSFP_TABIX_POS_FIELD";
 
-    $single{"gl-reportable-genes-ger"} = "CLINCLS_GERMLINE_REPORTABLE_GENES_GER";
-    $single{"gl-reviewable-genes-ger"} = "CLINCLS_GERMLINE_REVIEWABLE_GENES_GER";
-    $single{"gl-reportable-genes-refflat"} = "CLINCLS_GERMLINE_REPORTABLE_GENES_REFFLAT";
-    $single{"gl-reviewable-genes-refflat"} = "CLINCLS_GERMLINE_REVIEWABLE_GENES_REFFLAT";
-
     $single{"known-promoter-intervals"} = "CLINCLS_PROMOTER_REGIONS";
     $single{"known-promoter-sites"} = "CLINCLS_PROMOTER_SITES";
     $single{"2bit"} = "TWOBIT";
     $single{"cosmic-pubmed-summary"} = "CLINCLS_COSMIC_PUBMED_SUMMARY";
+    $single{"sqlite"} = "CLINCLS_MEDAL_CEREMONY_DB";
 
     foreach my $p (keys %single) {
       unless (defined $FLAGS{$p}) {
@@ -12986,7 +12606,7 @@ CLINCLS_PROMOTER_SITES
     $config2flag{NHLBI_TABIX_DIR} = "tabix-nhlbi";
     $config2flag{CLINCLS_COSMIC_TABIX_DIR} = "tabix-cosmic" if $ENABLE_TABIX_COSMIC;
     $config2flag{DBNSFP_TABIX_DIR} = "tabix-dbnsfp";
-    $config2flag{CLINCLS_GEDI_TABIX_DIR} = "tabix-gedi" if $ENABLE_TABIX_GEDI;
+    $config2flag{CLINCLS_GEDI_TABIX_DIR} = "tabix-gedi";
     $config2flag{CLINVAR_TABIX_DIR} = "tabix-clinvar";
     $config2flag{CURATED_PROMOTER_REGIONS} = "known-promoter-intervals" if $ENABLE_KNOWN_PROMOTER_REGIONS;
 
@@ -13021,22 +12641,6 @@ CLINCLS_PROMOTER_SITES
     # params where each may be specified multiple times to build up a list:
     #
     my %set;
-    $set{"gene-class"} = [
-			  \@GENE_CLASS_FILES,
-			  "CLINCLS_CANCER_GENE_LIST_FILE",
-			  "CLINCLS_NON_CANCER_GENE_LIST_HC_FILE",
-			  "CLINCLS_NON_CANCER_GENE_LIST_LC_FILE"
-			 ];
-    $set{"gedi-snv"} = [
-			\@GEDI_SNV,
-			"CLINCLS_GEDI_SNP_FIND_T1_FILE",
-			"CLINCLS_GEDI_SNP_FIND_T2_FILE",
-			"CLINCLS_GEDI_SNP_FIND_T3_FILE",
-		       ];
-    $set{"gedi-indels"} = [
-			   \@GEDI_INDELS,
-			   "CLINCLS_GEDI_INDEL_FIND_T1_FILE"
-			  ];
 
     $set{"gl-current-committee-medals"} = [
 					   \@COMMITTEE_GL_MEDALS,
@@ -13172,7 +12776,6 @@ CLINCLS_PROMOTER_SITES
 				      );
 
       $ignore_params{"-tabix-cosmic"} = 1 unless $ENABLE_TABIX_COSMIC;
-      $ignore_params{"-tabix-gedi"} = 1 unless $ENABLE_TABIX_GEDI;
 
       my @all_flags = grep {not(ref $_)} @COMMAND_OPTIONS;
       my $broken;
@@ -15605,14 +15208,10 @@ sub run_svs_new {
 	# - either one or two partner lists
 	#   (1 indicates internal rearrangement?)
 	# - each side of breakpoint may contain one or more genes
-	my $fusion = $row->{$FUSION_BUILDER_COLUMN};
-	$fusion =~ s/_{2,}/_/g;
-	# e.g. SLC9C1__locPar in
-	# /clinical/cgs01/clingen/prod/tartan/runs/crest-post/e6sGxbfw/intmd/SJMB030608_D1_G1/SJMB030608_D1_G1.counts
-	my @sides = split /_/, $fusion;
+	my @sides = split /_/, $row->{$FUSION_BUILDER_COLUMN};
 	my %saw;
 	foreach my $thing (@sides) {
-	  die "blank value in fusion element $fusion" unless $thing =~ /\w/;
+	  die unless $thing =~ /\w/;
 	  next if $saw{$thing};
 	  $saw{$thing} = 1;
 	  # special case for internal rearrangements, e.g.
@@ -16490,4 +16089,122 @@ sub get_germline_reviewable_genes {
     push @genes, $f[0];
   }
   return \@genes;
+}
+
+sub get_vm_mc_db {
+  my %options = @_;
+  my $f_db = $FLAGS{"sqlite"} || die "-sqlite";
+  my $dbi = DBI->connect("dbi:SQLite:dbname=$f_db","","");
+  my $svdb = new SimpleVariantDB(
+				 "-dbi" => $dbi,
+				);
+  my $rows = $svdb->get_rows_with_constants(%options);
+  die "no data for " . $options{"-name"} unless @{$rows};
+  my $vm = new VariantMatcher();
+  my $idx_aa = 0;
+  my $idx_genomic = 0;
+  my $row_count++;
+  foreach my $row (@{$rows}) {
+    $row_count++;
+    my ($chr, $pos, $ra, $va, $gene, $aa) =
+      @{$row}{F_VDB_CHR,
+		F_VDB_POS,
+		  F_VDB_RA,
+		    F_VDB_VA,
+		      F_VDB_GENE,
+			F_VDB_AA
+		      };
+
+    if ($gene and $aa) {
+#      printf STDERR "add $gene $aa\n";
+      $vm->add_aa("-gene" => $gene, "-aa" => $aa, "-row" => $row);
+      $idx_aa++;
+    }
+
+    if ($chr and $pos and ($ra or $va)) {
+      my $v = new Variant();
+      $v->import_generic(
+			 "-reference-name" => $chr,
+			 "-base-number" => $pos,
+			 "-reference-allele" => $ra,
+			 "-variant-allele" => $va
+			);
+      $vm->add_variant($v, "-row" => $row);
+      $idx_genomic++;
+    }
+  }
+  printf STDERR "db for %s: %d rows, indexed %d genomic, %d AA\n", $options{"-name"}, $row_count, $idx_genomic, $idx_aa;
+
+  return $vm;
+}
+
+sub get_vm_user_variants {
+  # DEVELOPMENT
+  # - to add?:
+  #   - gene/aa lookup (AA can of worms)
+  #   - user database name
+  #   - GSB call for different match categories
+  #   - variant-level GSB call?
+  my %options = @_;
+  my $param = $options{"-param"} || die "-param";
+  die if $param =~ /^\-/;
+  my $f_db = $FLAGS{$param};
+  my $vm = new VariantMatcher();
+  if ($f_db) {
+    # optional
+    my $df = new DelimitedFile("-file" => $f_db,
+			       "-headers" => 1,
+			      );
+    my $idx_genomic = 0;
+    my $row_count = 0;
+    my $idx_aa = 0;
+    while (my $row = $df->get_hash()) {
+      my $v = new Variant();
+      $v->import_bambino_row("-row" => $row);
+      # genomic details in raw Bambino format, e.g. vcf2tab.pl output
+      # if we ultimately go with VCF
+      $row_count++;
+
+      $vm->add_variant($v, "-row" => $row);
+      $idx_genomic++;
+    }
+    printf STDERR "db for %s: %d rows, indexed %d genomic, %d AA\n", "user_variants", $row_count, $idx_genomic, $idx_aa;
+  }
+
+  return $vm;
+}
+
+sub hack_user_variants {
+  foreach my $f_gl (@INPUT_GL_FILES) {
+    my $df = new DelimitedFile("-file" => $f_gl,
+			       "-headers" => 1,
+			     );
+    my $vm_user_variants = get_vm_user_variants();
+    while (my $row = $df->get_hash()) {
+      my $is_silent_intron_utr = 0;
+      my @reasons;
+      my $is_novel_these_db;
+      my $medal;
+      $medal = assign_aa_match(
+				 "-vm" => $vm_user_variants,
+				 "-row" => $row,
+				 "-is-silent" => $is_silent_intron_utr,
+				 "-silent-allowed" => 0,
+				 "-protect" => 0,
+#				 "-transcript-handshake" => $FIELD_REFSEQ,
+				 "-current-medal" => $medal,
+				 "-reasons" => \@reasons,
+				 "-label" => "user_variant",
+				 "-novel-flag" => \$is_novel_these_db,
+				 "-medal-perfect" => CLASS_GOLD,
+				 "-medal-codon" => CLASS_SILVER,
+				 "-medal-site" => CLASS_SILVER,
+				 "-genomic-lookup" => 1,
+#				 "-pubmed-list" => \@pmid,
+#				 "-pubmed-field" => F_VDB_PMID()
+				);
+      die @reasons;
+    }
+
+  }
 }

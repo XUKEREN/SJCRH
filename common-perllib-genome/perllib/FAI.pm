@@ -95,29 +95,8 @@ sub setup {
 sub get_irow {
   my ($self, %options) = @_;
   my $id_raw = $options{"-id"} || die "-id";
-
-  my @try = $id_raw;
-  # lookup as given
-  my $thing = $id_raw;
-  $thing =~ s/^chr//i;
-  # try without chr, if present
-  my @things;
-  push @things, $thing;
-  push @things, "M" if $thing eq "MT";
-  push @things, "MT" if $thing eq "M";
-
-  foreach my $t (@things) {
-    push @try, $t;
-    push @try, "chr" . $t;
-    # add chr, if needed
-  }
-
-  my $irow;
-  foreach my $id (@try) {
-    $irow = $self->index->{$id};
-    last if $irow;
-  }
-  confess "no hit for $id_raw" unless $irow;
+  my $id_idx = $self->find_name($id_raw) || confess "no hit for $id_raw";
+  my $irow = $self->index->{$id_idx} || die;
   return $irow;
 }
 

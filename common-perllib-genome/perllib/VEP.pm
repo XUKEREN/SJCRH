@@ -45,6 +45,7 @@ result_queue
 held_result
 
 vep_extra_params
+verbose
 		  );
 
 sub new {
@@ -173,7 +174,29 @@ sub run_vep {
 
   my $vep_out = $self->vep_out() || die;
 
-  my $cmd = sprintf '%s --quiet --no_stats --refseq --hgvs --force_overwrite --offline --fasta %s -i %s -o %s --dir %s --dir_cache %s --dir_plugins %s --pubmed',
+  die sprintf "can't find FASTA $fasta" unless -f $fasta;
+  die sprintf "can't find VEP input file %s", $self->vep_in unless -f $self->vep_in;
+  die sprintf "can't find VEP cache_dir %s", $cache_dir unless -d $cache_dir;
+
+
+  if (0) {
+    # debug
+    my $which = `which $vep_binary`;
+    chomp $which;
+    printf STDERR "which %s = %s\n", $vep_binary, $which;
+    printf STDERR "ls -l %s = %s\n", $vep_binary, `ls -l $which`;
+    printf STDERR "PATH: %s\n", $ENV{PATH};
+
+    printf STDERR "direct which vep:\n";
+    system $which;
+    printf STDERR "which exit: %s => %s\n", $?, $!;
+
+    printf STDERR "simple vep:\n";
+    system $vep_binary;
+    die "simple debug call \"$vep_binary\" failed with $?: $!" if $?;
+  }
+
+  my $cmd = sprintf '%s --quiet --no_stats --refseq --hgvs --force_overwrite --offline --fasta %s -i %s -o %s --dir %s --dir_cache %s --dir_plugins %s --pubmed --symbol',
   $vep_binary,
   $fasta,
   $self->vep_in,
@@ -191,9 +214,10 @@ sub run_vep {
 
   unless ($self->prebuilt) {
     my $start_time = time;
+    printf STDERR "running: %s\n", $cmd if $self->verbose;
     system($cmd);
+    die "$cmd exited with $?: $!" if $?;
     printf STDERR "VEP run time: %d\n", time - $start_time;
-    die "$cmd exited with $?" if $?;
   }
   return if $self->vep_only();
 

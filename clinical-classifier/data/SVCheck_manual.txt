@@ -1,0 +1,87 @@
+pair1	pair2	contact	date
+FLT3		Matt Parker	10/2/2013
+CDKN2A		Matt Parker	10/2/2013
+CDKN2B-AS1		Matt Parker	11/13/2013
+ALK	NPM1	Matt Parker	12/12/2013
+NUP214	DEK	Jinghui Zhang	5/20/2014
+C11orf95	RELA	Jinghui Zhang	5/20/2014
+SS18	SSX1	Zhaojie Zhang	5/22/2014
+SS18	SSX4	Zhaojie Zhang	5/22/2014
+ASPSCR1	TFE3	Jinghui Zhang	6/2/2014
+EWSR1	FLI1	Sheila Shurtleff	1/8/2015
+EWSR1	ERG	Sheila Shurtleff	1/8/2015
+EWSR1	FEV	Sheila Shurtleff	1/8/2015
+EWSR1	ETV1	Sheila Shurtleff	1/8/2015
+EWSR1	E1AF	Sheila Shurtleff	1/8/2015
+EWSR1	WT1	Sheila Shurtleff	1/8/2015
+PAX3	FOXO1	Sheila Shurtleff	1/8/2015
+PAX7	FOXO1	Sheila Shurtleff	1/8/2015
+ASPL	TFE3	Sheila Shurtleff	1/8/2015
+COL1A1	PDGFB	Sheila Shurtleff	1/8/2015
+EWSR1	ATF1	Sheila Shurtleff	1/8/2015
+ETV6	NTRK3	Sheila Shurtleff	1/8/2015
+SS18	SSX1	Sheila Shurtleff	1/8/2015
+SS18	SSX2	Sheila Shurtleff	1/8/2015
+SS18	SSX4	Sheila Shurtleff	1/8/2015
+EWSR1	CHN	Sheila Shurtleff	1/8/2015
+EWSR1	CHOP	Sheila Shurtleff	1/8/2015
+TLS	CHOP	Sheila Shurtleff	1/8/2015
+EWSR1	CHOP	Sheila Shurtleff	1/8/2015
+KIAA1549	BRAF	Sheila Shurtleff	1/8/2015
+EAP	RUNX1	Sheila Shurtleff	1/8/2015
+MDS1	RUNX1	Sheila Shurtleff	1/8/2015
+EVI	RUNX1	Sheila Shurtleff	1/8/2015
+RUNX1	RUNX1T1	Sheila Shurtleff	1/8/2015
+CBFB	MYH11	Sheila Shurtleff	1/8/2015
+MTG16	RUNX1	Sheila Shurtleff	1/8/2015
+NPM1	RARA	Sheila Shurtleff	1/8/2015
+PLZF	RARA	Sheila Shurtleff	1/8/2015
+PML	RARA	Sheila Shurtleff	1/8/2015
+EVI1		Sheila Shurtleff	1/8/2015
+MDS1	ETV6	Sheila Shurtleff	1/8/2015
+EVI1	ETV6	Sheila Shurtleff	1/8/2015
+MEL1		Sheila Shurtleff	1/8/2015
+DEK	NUP214	Sheila Shurtleff	1/8/2015
+NUP98		Sheila Shurtleff	1/8/2015
+OTT	MAL	Sheila Shurtleff	1/8/2015
+MOZ	TIF2	Sheila Shurtleff	1/8/2015
+MOZ	CBP	Sheila Shurtleff	1/8/2015
+MOZ	P300	Sheila Shurtleff	1/8/2015
+MORF	CBP	Sheila Shurtleff	1/8/2015
+FUS	ERG	Sheila Shurtleff	1/8/2015
+ETV6		Sheila Shurtleff	1/8/2015
+NPM1	MLF1	Sheila Shurtleff	1/8/2015
+PICALM	AF10	Sheila Shurtleff	1/8/2015
+ETV6	RUNX1	Sheila Shurtleff	1/8/2015
+TCF3	PBX1	Sheila Shurtleff	1/8/2015
+BCR	ABL1	Sheila Shurtleff	1/8/2015
+MLL	AFF1	Sheila Shurtleff	1/8/2015
+MYC		Sheila Shurtleff	1/8/2015
+STIL	TAL1	Sheila Shurtleff	1/8/2015
+P2RY8	CRLF2	Sheila Shurtleff	1/8/2015
+PAX5	IGH	Sheila Shurtleff	1/8/2015
+API2	MALT1	Sheila Shurtleff	1/8/2015
+BCL10	IGH	Sheila Shurtleff	1/8/2015
+IGH	MALT1	Sheila Shurtleff	1/8/2015
+IGH	BCL2	Sheila Shurtleff	1/8/2015
+CCND1	IGH	Sheila Shurtleff	1/8/2015
+BCL6		Sheila Shurtleff	1/8/2015
+IGH	BCL2	Sheila Shurtleff	1/8/2015
+MYC	IGH	Sheila Shurtleff	1/8/2015
+IGL	MYC	Sheila Shurtleff	1/8/2015
+IGK	MYC	Sheila Shurtleff	1/8/2015
+MYC	IGH	Sheila Shurtleff	1/8/2015
+IGH		Sheila Shurtleff	1/8/2015
+FGFR1OP	FGFR1	Sheila Shurtleff	1/8/2015
+CEP110	FGFR1	Sheila Shurtleff	1/8/2015
+ZNF198	FGFR1	Sheila Shurtleff	1/8/2015
+BCR	FGFR1	Sheila Shurtleff	1/8/2015
+HIP1	PDGFRB	Sheila Shurtleff	1/8/2015
+CCDC6	PDGFRB	Sheila Shurtleff	1/8/2015
+ETV6	PDGFRB	Sheila Shurtleff	1/8/2015
+CEV14	PDGFRB	Sheila Shurtleff	1/8/2015
+NIN	PDGFRB	Sheila Shurtleff	1/8/2015
+RABEP1	PDGFRB	Sheila Shurtleff	1/8/2015
+SPECC1	PDGFRB	Sheila Shurtleff	1/8/2015
+PDE4DIP	PDGFRB	Sheila Shurtleff	1/8/2015
+FIP1L1	PDGFRA	Sheila Shurtleff	1/8/2015

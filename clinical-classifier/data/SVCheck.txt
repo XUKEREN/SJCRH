@@ -1,0 +1,387 @@
+BCR	ABL1	Leukemia;MolPath;COSMIC
+BRAF		LGG;COSMIC
+BTG1		ETV;COSMIC
+C11orf95	MAML2	EPD;COSMIC
+CBFA2T3	GLIS2	M7;COSMIC
+CBFB	MYH11	Acute Leukemia/Lymphoma;MolPath;COSMIC
+CBL		CBF;COSMIC
+ETV6	NTRK3	Solid Tumor;MolPath;COSMIC
+ETV6	RUNX1	Leukemia;MolPath;COSMIC
+EWSR1	ERG	Solid Tumor;MolPath;COSMIC
+EWSR1	FLI1	Solid Tumor;MolPath;COSMIC
+EWSR1	WT1	Solid Tumor;MolPath;COSMIC
+FGFR1		LGG;COSMIC
+FHIT		ETV;COSMIC
+KIAA1549	BRAF	Solid Tumor;MolPath;COSMIC
+KMT2A	ABI1	Leukemia;COSMIC
+KMT2A	ABI2	Leukemia;COSMIC
+KMT2A	ACACA	Leukemia;COSMIC
+KMT2A	ACER1	Leukemia;COSMIC
+KMT2A	ACTN4	Leukemia;COSMIC
+KMT2A	MLLT11	Leukemia;COSMIC
+KMT2A	AFF1	Leukemia;COSMIC
+KMT2A	AFF1	Leukemia;MolPath;COSMIC
+KMT2A	AFF3	Leukemia;COSMIC
+KMT2A	AFF4	Leukemia;COSMIC
+KMT2A	AKAP13	Leukemia;COSMIC
+KMT2A	AP2A2	Leukemia;COSMIC
+KMT2A	ARHGAP26	Leukemia;COSMIC
+KMT2A	ARHGEF12	Leukemia;COSMIC
+KMT2A	ARHGEF17	Leukemia;COSMIC
+KMT2A	BCL9L	Leukemia;COSMIC
+KMT2A	BTBD18	Leukemia;COSMIC
+KMT2A	BUD13	Leukemia;COSMIC
+KMT2A	C2CD3	Leukemia;COSMIC
+KMT2A	CASC5	Leukemia;COSMIC
+KMT2A	CASP8AP2	Leukemia;COSMIC
+KMT2A	CBL	Leukemia;COSMIC
+KMT2A	CEP164	Leukemia;COSMIC
+KMT2A	CEP170B	Leukemia;COSMIC
+KMT2A	CREBBP	Leukemia;COSMIC
+KMT2A	CT45A2	Leukemia;COSMIC
+KMT2A	DAB2IP	Leukemia;COSMIC
+KMT2A	DCP1A	Leukemia;COSMIC
+KMT2A	DCPS	Leukemia;COSMIC
+KMT2A	EEFSEC	Leukemia;COSMIC
+KMT2A	ELL	Acute Leukemia/Lymphoma;MolPath;COSMIC
+KMT2A	ELL	Leukemia;MolPath;COSMIC
+KMT2A	MLLT1	Leukemia;COSMIC
+KMT2A	EP300	Leukemia;COSMIC
+KMT2A	EPS15	Leukemia;COSMIC
+KMT2A	FLNA	Leukemia;COSMIC
+KMT2A	FNBP1	Leukemia;COSMIC
+KMT2A	FOXO3	Leukemia;COSMIC
+KMT2A	FOXO4	Leukemia;COSMIC
+KMT2A	FRYL	Leukemia;COSMIC
+KMT2A	GAS7	Leukemia;COSMIC
+KMT2A	GMPS	Leukemia;COSMIC
+KMT2A	GPHN	Leukemia;COSMIC
+KMT2A	KIAA1524	Leukemia;COSMIC
+KMT2A	LAMC3	Leukemia;COSMIC
+KMT2A	ARHGEF12	Leukemia;COSMIC
+KMT2A	LASP1	Leukemia;COSMIC
+KMT2A	LPP	Leukemia;COSMIC
+KMT2A	MAML2	Leukemia;COSMIC
+KMT2A	MAPRE1	Leukemia;COSMIC
+KMT2A	ME2	Leukemia;COSMIC
+KMT2A	MLLT10	Leukemia;MolPath;COSMIC
+KMT2A	MLLT11	Leukemia;MolPath;COSMIC
+KMT2A	MLLT1	Leukemia;COSMIC
+KMT2A	MLLT3	Acute Leukemia/Lymphoma;MolPath;COSMIC
+KMT2A	MLLT3	Leukemia;COSMIC
+KMT2A	MLLT4	Leukemia;MolPath;COSMIC
+KMT2A	MLLT6	Leukemia;COSMIC
+KMT2A	MYH11	Leukemia;COSMIC
+KMT2A	MYO1F	Leukemia;COSMIC
+KMT2A	NCKIPSD	Leukemia;COSMIC
+KMT2A	NEBL	Leukemia;COSMIC
+KMT2A	NRIP3	Leukemia;COSMIC
+KMT2A	PDS5A	Leukemia;COSMIC
+KMT2A	PICALM	Leukemia;COSMIC
+KMT2A	PRPF19	Leukemia;COSMIC
+KMT2A	RUNDC3B	Leukemia;COSMIC
+KMT2A	SACM1L	Leukemia;COSMIC
+KMT2A	SARNP	Leukemia;COSMIC
+KMT2A	SEPT11	Leukemia;COSMIC
+KMT2A	SEPT2	Leukemia;COSMIC
+KMT2A	SEPT5	Leukemia;COSMIC
+KMT2A	SEPT6	Leukemia;COSMIC
+KMT2A	SEPT9	Leukemia;COSMIC
+KMT2A	SH3GL1	Leukemia;COSMIC
+KMT2A	SMAP1	Leukemia;COSMIC
+KMT2A	SORBS2	Leukemia;COSMIC
+KMT2A	TET1	Leukemia;COSMIC
+KMT2A	TNRC18	Leukemia;COSMIC
+KMT2A	TOP3A	Leukemia;COSMIC
+KMT2A	VAV1	Leukemia;COSMIC
+KMT2A	ZFYVE19	Leukemia;COSMIC
+MYB		LGG;COSMIC
+NTRK1		HGG;COSMIC
+NTRK3		LGG;HGG;COSMIC
+NUP98	KDM5A	M7;COSMIC
+PAX3	FOXO1	Solid Tumor;MolPath;COSMIC
+PAX3		RHB;COSMIC
+PAX5		ETV;COSMIC
+PAX7	FOXO1	Solid Tumor;MolPath;COSMIC
+PAX7		RHB;COSMIC
+PDGFRA		HGG;COSMIC
+PML	RARA	Acute Leukemia/Lymphoma;MolPath;COSMIC
+RAF1		LGG;COSMIC
+RBM15	MKL1	Acute Leukemia/Lymphoma;MolPath;COSMIC
+RUNX1	RUNX1T1	Acute Leukemia/Lymphoma;MolPath;COSMIC
+SS18	SSX2	Solid Tumor;MolPath;COSMIC
+TCF3	HLF	E2A;COSMIC
+TCF3	PBX1	Acute Leukemia/Lymphoma;MolPath;COSMIC
+TCF3	PBX1	E2A;COSMIC
+WHSC1		ETV;COSMIC
+ABL2		AML;COSMIC
+ACSL3		prostate;COSMIC
+CASC5		AML;COSMIC
+NCKIPSD		ALL;COSMIC
+AFF4		ALL;COSMIC
+AKAP9		papillary_thyroid;COSMIC
+ALDH2		leiomyoma;COSMIC
+ALK		ALCL;__NSCLC;__neuroblastoma;COSMIC
+RNF213		ALCL;COSMIC
+RHOH		NHL;COSMIC
+ARNT		AML;COSMIC
+ASPSCR1		alveolar_soft_part_sarcoma;COSMIC
+ATF1		malignant_melanoma_of_soft_parts;__angiomatoid_fibrous_histiocytoma;COSMIC
+ATIC		ALCL;COSMIC
+BCL10		MALT;COSMIC
+BCL11A		B-CLL;COSMIC
+BCL11B		T-ALL;COSMIC
+BCL2		NHL;__CLL;COSMIC
+BCL3		CLL;COSMIC
+BCL6		CLL;COSMIC
+BCL6		NHL;__CLL;COSMIC
+BCL7A		BNHL;COSMIC
+BCL9		B-ALL;COSMIC
+BCOR		retinoblastoma;__AML;__APL_(translocation);COSMIC
+BIRC3		MALT;COSMIC
+BRD3		lethal_midline_carcinoma_of_young_people;COSMIC
+BRD4		lethal_midline_carcinoma_of_young_people;COSMIC
+HMGN2P46		prostate;COSMIC
+NUTM1		lethal_midline_carcinoma;COSMIC
+RMI2		PMBL;__Hodgkin_lymphoma;COSMIC
+C2orf44		NSCLC;COSMIC
+CAMTA1		epithelioid_haemangioendothelioma;COSMIC
+CANT1		prostate;COSMIC
+CARS		ALCL;COSMIC
+RUNX1T1		AML;COSMIC
+CCDC6		NSCLC;COSMIC
+CCNB1IP1		leiomyoma;COSMIC
+CCND1		CLL;__B-ALL;__breast;COSMIC
+CCND2		NHL;_CLL;COSMIC
+CCND3		MM;COSMIC
+PDCD1LG2		PMBL;__Hodgkin_lymphoma;COSMIC
+CD274		PMBL;__Hodgkin_lymphoma;COSMIC
+CD74		NSCLC;COSMIC
+CDH11		aneurysmal_bone_cyst;COSMIC
+CDK6		ALL;COSMIC
+CDX2		AML;COSMIC
+CNTRL		MPD;__NHL;COSMIC
+CHCHD7		salivary_gland_adenoma;COSMIC
+CHIC2		AML;COSMIC
+CHN1		extraskeletal_myxoid_chondrosarcoma;COSMIC
+CIC		oligodendroglioma;__soft_tissue_sarcoma;COSMIC
+CIITA		PMBL;__Hodgkin_lymphoma;COSMIC
+CLTC		ALCL;__renal;COSMIC
+CLTCL1		ALCL;COSMIC
+ACKR3		lipoma;COSMIC
+COL1A1		dermatofibrosarcoma_protuberans;__aneurysmal_bone_cyst;COSMIC
+COX6C		uterine_leiomyoma;COSMIC
+CREB1		clear_cell_sarcoma;__angiomatoid_fibrous_histiocytoma;COSMIC
+CREB3L1		myxofibrosarcoma;COSMIC
+CREB3L2		fibromyxoid_sarcoma;COSMIC
+CRLF2		B-ALL;__Downs_associated_ALL;COSMIC
+CRTC3		salivary_gland_mucoepidermoid;COSMIC
+CTNNB1		colorectal;__ovarian;___hepatoblastoma;__pleomorphic_salivary_gland_adenoma;__other_tumour_types;COSMIC
+CCDC6		papillary_thyroid;__CML;COSMIC
+DDIT3		liposarcoma;COSMIC
+DDX10		AML*;COSMIC
+DDX5		prostate;COSMIC
+DDX6		B-NHL;COSMIC
+DEK		AML;COSMIC
+DUX4		soft_tissue_sarcoma;COSMIC
+EBF1		lipoma;COSMIC
+EIF4A2		NHL;COSMIC
+ELF4		AML;COSMIC
+ELK4		prostate;COSMIC
+ERC1		papillary_thyroid;COSMIC
+ELN		B-ALL;COSMIC
+EML4		NSCLC;COSMIC
+ETV1		Ewing_sarcoma;__prostate;COSMIC
+ETV4		Ewing_sarcoma;__prostate_carcinoma;COSMIC
+ETV5		prostate;COSMIC
+MECOM		AML;__CML;COSMIC
+EZR		NSCLC;COSMIC
+ACSL6		AML;__AEL;COSMIC
+NUTM2A		endometrial_stromal_sarcoma;COSMIC
+NUTM2B		endometrial_stromal_sarcoma;COSMIC
+FCGR2B		ALL;COSMIC
+FEV		Ewing_sarcoma;COSMIC
+FGFR1OP		MPD;__NHL;COSMIC
+FGFR3		bladder;__MM;__T-cell_lymphoma;COSMIC
+FIP1L1		idiopathic_hypereosinophilic_syndrome;COSMIC
+C15orf65		PMBL;__Hodgkin_lymphoma;COSMIC
+FOXO1		alveolar_rhabdomyosarcoma;COSMIC
+FOXO3		AL;COSMIC
+FOXP1		ALL;COSMIC
+FSTL3		B-CLL;COSMIC
+FUS		liposarcoma;__AML;__Ewing_sarcoma;__angiomatoid_fibrous_histiocytoma;__fibromyxoid_sarcoma;COSMIC
+KDSR		B-NHL;COSMIC
+GOLGA5		papillary_thyroid;COSMIC
+GPC3		;COSMIC
+ARHGAP26		AML;__MDS;COSMIC
+SPECC1		JMML;COSMIC
+CLP1		AML;COSMIC
+HERPUD1		prostate;COSMIC
+HEY1		mesenchymal_chondrosarcoma;COSMIC
+HIP1		CMML;COSMIC
+HIST1H4I		NHL;COSMIC
+MNX1		AML;COSMIC
+HMGA1		microfollicular_thyroid_adenoma;__various_benign_mesenchymal_tumours;COSMIC
+HMGA2		lipoma;__leiomyoma;__pleomorphic_salivary_gland_adenoma;COSMIC
+HNRNPA2B1		prostate;COSMIC
+HOOK3		papillary_thyroid;COSMIC
+HOXA11		CML;COSMIC
+HOXA13		AML;COSMIC
+HOXA9		AML*;COSMIC
+HOXC11		AML;COSMIC
+HOXC13		AML;COSMIC
+HOXD11		AML;COSMIC
+HOXD13		AML*;COSMIC
+HSP90AA1		NHL;COSMIC
+HSP90AB1		NHL;COSMIC
+IGH@		MM;__Burkitt_lymphoma;__NHL;__CLL;__B-ALL;__MALT;__MLCLS;COSMIC
+IGK@		Burkitt_lymphoma;__B-NHL;COSMIC
+IGL@		Burkitt_lymphoma;COSMIC
+IKZF1		ALL;__DLBCL;COSMIC
+IL2		intestinal_T-cell_lymphoma;COSMIC
+IL21R		NHL;COSMIC
+IRF4		MM;COSMIC
+FCRL4		B-NHL;COSMIC
+ITK		peripheral_T-cell_lymphoma;COSMIC
+JAK2		ALL;__AML;__MPD;___CML;COSMIC
+JAZF1		endometrial_stromal_tumour;COSMIC
+KIF5B		NSCLC;COSMIC
+KLK2		prostate;COSMIC
+KTN1		papillary_thyroid;COSMIC
+AFF3		ALL;__T-ALL;COSMIC
+LCK		T-ALL;COSMIC
+LCP1		NHL;COSMIC
+TET1		AML;COSMIC
+LHFP		lipoma;COSMIC
+LIFR		salivary_adenoma;COSMIC
+LMO1		T-ALL;__neuroblastoma;COSMIC
+LMO2		T-ALL;COSMIC
+LRIG3		NSCLC;COSMIC
+LYL1		T-ALL;COSMIC
+MAF		MM;COSMIC
+MAFB		MM;COSMIC
+MALT1		MALT;COSMIC
+MECOM		MDS;__AML;COSMIC
+MDS2		MDS;COSMIC
+CRTC1		salivary_gland_mucoepidermoid;COSMIC
+MLF1		AML;COSMIC
+AFF1		AL;COSMIC
+FOXO4		AL;COSMIC
+MN1		AML;__meningioma;COSMIC
+SEPT9		AML*;COSMIC
+MSI2		CML;COSMIC
+MSN		ALCL;COSMIC
+MTCP1		T_cell_prolymphocytic_leukaemia;COSMIC
+MUC1		B-NHL;COSMIC
+MYC		Burkitt_lymphoma;__amplified_in_other_cancers;__B-CLL;COSMIC
+MYH9		ALCL;COSMIC
+KAT6B		AML;COSMIC
+NACA		NHL;COSMIC
+NCOA1		alveolar_rhabdomyosarcoma;COSMIC
+NCOA2		AML;__chondrosarcoma;COSMIC
+NCOA4		papillary_thyroid;COSMIC
+NDRG1		prostate;COSMIC
+NFIB		adenoid_cystic_carcinoma;__lipoma;COSMIC
+NFKB2		B-NHL;COSMIC
+NIN		MPD;COSMIC
+NONO		papillary_renal;COSMIC
+NOTCH1		T-ALL;COSMIC
+NPM1		NHL;__APL;__AML;COSMIC
+NR4A3		extraskeletal_myxoid_chondrosarcoma;COSMIC
+NSD1		AML;COSMIC
+NUMA1		APL;COSMIC
+NUP214		AML;__T-ALL;COSMIC
+OLIG2		T-ALL;COSMIC
+OMD		aneurysmal_bone_cyst;COSMIC
+P2RY8		B-ALL;__Down_syndrome_associated_ALL;COSMIC
+PAFAH1B2		MLCLS;COSMIC
+PAX8		follicular_thyroid;COSMIC
+PCM1		papillary_thyroid;__CML;__MPD;COSMIC
+PCSK7		MLCLS;COSMIC
+PDE4DIP		MPD;COSMIC
+PDGFB		DFSP;COSMIC
+PDGFRB		MPD;__AML;__CMML;__CML;COSMIC
+PER1		AML;__CMML;COSMIC
+PIM1		NHL;COSMIC
+PLAG1		salivary_adenoma;COSMIC
+PRRX1		AML;COSMIC
+SEPT5		AML;COSMIC
+POU2AF1		NHL;COSMIC
+POU5F1		sarcoma;COSMIC
+PPARG		follicular_thyroid;COSMIC
+PRCC		papillary_renal;COSMIC
+PRDM16		MDS;__AML;COSMIC
+PRKAR1A		papillary_thyroid;COSMIC
+MALAT1		renal_cell_carcinoma_(childhood_epithelioid);COSMIC
+PSIP1		AML;COSMIC
+RABEP1		CMML;COSMIC
+RAD51B		lipoma;__uterine_leiomyoma;COSMIC
+RALGDS		PMBL;__Hodgkin_lymphoma;;COSMIC
+RANBP17		ALL;COSMIC
+RAP1GDS1		T-ALL;COSMIC
+RET		medullary_thyroid;__papillary_thyroid;__pheochromocytoma;__NSCLC;COSMIC
+ROS1		glioblastoma;__NSCLC;COSMIC
+RPL22		AML;__CML;COSMIC
+RPN1		AML;COSMIC
+SNX29		PMBL;__Hodgkin_lymphoma;COSMIC
+KAT6A		AML;COSMIC
+SDC4		NSCLC;COSMIC
+SEPT6		AML;COSMIC
+SET		AML;COSMIC
+SFPQ		papillary_renal;COSMIC
+SRSF3		follicular_lymphoma;COSMIC
+STIL		T-ALL;COSMIC
+SLC34A2		NSCLC;COSMIC
+SLC45A3		prostate;COSMIC
+SRGAP3		pilocytic_astrocytoma;COSMIC
+SS18L1		synovial_sarcoma;COSMIC
+ABI1		AML;COSMIC
+SSX1		synovial_sarcoma;COSMIC
+SSX2		synovial_sarcoma;COSMIC
+SSX4		synovial_sarcoma;COSMIC
+STL		B-ALL;COSMIC
+SUZ12		endometrial_stromal_tumour;COSMIC
+SYK		MDS;__peripheral_T-cell_lymphoma;COSMIC
+TAF15		extraskeletal_myxoid_chondrosarcoma;__ALL;COSMIC
+TAL1		lymphoblastic_leukaemia/biphasic;COSMIC
+TAL2		T-ALL;COSMIC
+TCEA1		salivary_adenoma;COSMIC
+TCF12		extraskeletal_myxoid_chondrosarcoma;COSMIC
+TCF7L2		colorectal;COSMIC
+TCL1A		T-CLL;COSMIC
+TCL6		T-ALL;COSMIC
+TFE3		papillary_renal;__alveolar_soft_part_sarcoma;__renal;COSMIC
+TFEB		renal_cell_carcinoma_(childhood_epithelioid);COSMIC
+TFG		papillary_thyroid;__ALCL;__NSCLC;COSMIC
+TFPT		pre-B_ALL;COSMIC
+TFRC		NHL;COSMIC
+THRAP3		aneurysmal_bone_cyst;COSMIC
+TRIM24		APL;COSMIC
+TLX1		T-ALL;COSMIC
+TLX3		T-ALL;COSMIC
+TMPRSS2		prostate;COSMIC
+TNFRSF17		intestinal_T-cell_lymphoma;COSMIC
+TOP1		AML*;COSMIC
+TPM3		papillary_thyroid;__ALCL;__NSCLC;COSMIC
+TPM4		ALCL;COSMIC
+TPR		papillary_thyroid;COSMIC
+TRA@		T-ALL;COSMIC
+TRB@		T-ALL;COSMIC
+TRD@		T-cell_leukaemia;COSMIC
+TRIM27		papillary_thyroid;COSMIC
+TRIM33		papillary_thyroid;COSMIC
+TRIP11		AML;COSMIC
+TTL		ALL;COSMIC
+USP6		aneurysmal_bone_cyst;COSMIC
+VTI1A		colorectal;COSMIC
+WHSC1L1		AML;COSMIC
+WIF1		pleomorphic_salivary_gland_adenoma;COSMIC
+WWTR1		epithelioid_haemangioendothelioma;COSMIC
+YWHAE		edometrial_stromal_sarcoma;COSMIC
+ZBTB16		APL;COSMIC
+ZMYM2		MPD;__NHL;COSMIC
+PATZ1		Ewing_sarcoma;COSMIC
+ZNF331		follicular_thyroid_adenoma;COSMIC
+ZNF384		ALL;COSMIC
+ZNF521		ALL;COSMIC
+CNBP		aneurysmal_bone_cyst;COSMIC

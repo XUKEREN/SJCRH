@@ -193,6 +193,11 @@ sub get_genes_ordered {
   return $self->genes_ordered();
 }
 
+sub get_lines {
+  my ($self, $gene) = @_;
+  return $self->gene2lines->{$gene};
+}
+
 1;
 
 # LRF support:

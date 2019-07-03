@@ -1,0 +1,83 @@
+# these are command-line switches for medal_ceremony.pl
+# LIMITATION: WHITESPACE NOT PERMITTED IN PARAMETERS
+-gold /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/GoldGene.lst
+-silver /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/SilverGene.lst
+-gene-class /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/CancerGene_Good_Merged_mod.txt
+-gene-class /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/NonCancerGene_Good_Merged_mod_high_confidence.txt
+-gene-class /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/NonCancerGene_Good_Merged_mod_low_confidence.txt
+-cosmic /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/COSMIC_SNV_indel_pubmed_info.txt
+-cosmic-gold /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/Gold_SNV_Indel.txt
+-cosmic-silver /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/Silver_SNV_Indel.txt
+-gedi-recurrent /nfs_exports/genomes/1/projects/ClinicalSeq/PCGPRecurrentMutation/GeDI_mutation_20130425.txt
+-gedi-snv /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/export_snp_find_t1.tab
+-gedi-snv /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/export_snp_find_t2.tab
+-gedi-snv /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/export_snp_find_t3.tab
+-gedi-indel /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/export_indel_find_t1.tab
+#-cosmic-cleaned /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/CosmicMutantExport_v66_250713_cleaned.tab
+-cosmic-cleaned /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/CosmicMutantExport_v66_250713_cleaned_2013_12_20.tab
+# corrects NHLBI filtering and removes some stray silent variants
+#-cnv /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/CNVCheck.txt
+-cnv /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/CNVCheck.txt.2014_04_09
+# maps gene symbols from source list to GENE_EXON_REGION space
+#-cnv-annotations /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/CancerGeneCensus/Deletion.txt
+-cnv-annotations /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/CancerGeneCensus/Deletion.txt.2014_04_09
+# maps gene symbols from source list to GENE_EXON_REGION space
+#-sv /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck.txt
+-sv /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck.txt.2014_04_11.txt
+# patched symbols to match MW's "sharp" refFlat on clinical
+#-sv-manual /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck_manual.txt
+#-sv-manual /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck_manual_2014_05_20.txt
+#-sv-manual /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck_manual_2014_05_22.txt
+-sv-manual /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck_manual_2014_06_02.txt
+-gene-exon-region-dir /nfs_exports/apps/gnu-apps/NextGen/nextgensupport/hg19/GENE_EXON_REGION
+-genes-manual /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/genes_manual.tab
+-asu-tert /nfs_exports/genomes/1/projects/ClinicalSeq/germline/ASU_TERT/diseases_excerpt_TERT.html
+-iarc-tp53-germline /nfs_exports/genomes/1/projects/ClinicalSeq/germline/IARC_TP53/datasets/germlineMutationDataIARC_TP53_Database_R16.txt
+-iarc-tp53-somatic /nfs_exports/genomes/1/projects/ClinicalSeq/germline/IARC_TP53/datasets/somaticMutationDataIARC_TP53_Database_R16.txt
+#-clinvar /nfs_exports/genomes/1/PCGP/BucketIntermediate/PN/PCGP_germline_analysis/PublicDB/clinvar_20130506.vcf
+# OBSOLETE after next update
+# 10/30/2013: stepped on  :(
+#-clinvar /nfs_exports/genomes/1/projects/ClinicalSeq/germline/ClinVar/clinvar_20130930.vcf
+#-clinvar /nfs_exports/genomes/1/PCGP/BucketIntermediate/PN/PCGP_germline_analysis/PublicDB/clinvar_20130506.vcf.orig
+-gl-gold-cancer-ranges /nfs_exports/genomes/1/PCGP/BucketIntermediate/germlineSNVs/genelists/cancer_related_genes_dec19.2013.lst
+# 2/2014: replaces -gl-gold-cancer
+-fasta-dir /nfs_exports/genomes/1/Homo_sapiens/GRCh37-lite/FASTA/chromosomes
+-nhlbi-dir /nfs_exports/genomes/1/Homo_sapiens/GRCh37-lite/EVS_SNPs/ESP6500/SNP_txt/
+-gl-arup /nfs_exports/genomes/1/projects/ClinicalSeq/germline/ARUP/MEN2_display.php
+-dbnsfp-dir /nfs_exports/genomes/1/Homo_sapiens/dbNSFP/
+-uniprot-idmapping /nfs_exports/genomes/1/projects/ClinicalSeq/medal_config/2013_09_20/HUMAN_9606_idmapping.dat.2014.01.06.gz
+-preferred-isoforms /nfs_exports/apps/gnu-apps/NextGen/nextgensupport2/NCBI/RefSeq/gene_transcript_matrix.withNM.mod
+-gl-bad-snv /nfs_exports/genomes/1/projects/ClinicalSeq/germline/bad_variants/bad_SNV_list.tab
+-gl-ts /nfs_exports/genomes/1/projects/ClinicalSeq/GermlineGene/GermlineReportableGeneAnnotation.txt
+-rb1-flatfile /nfs_exports/genomes/1/projects/ClinicalSeq/germline/RB1/scrape_2013_12_20/for_classifier/export_RB1_all.tab.map.tab
+-cosmic-hotspots /nfs_exports/genomes/1/projects/ClinicalSeq/germline/COSMIC_hotspots/v1/cosmic_hotspots_10_patients_sorted.tab
+#-gl-committee-medals /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/PCGP_germline_variants_35genes_medal_assignment_2014jan31.txt
+#-gl-committee-medals /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/PCGP_germline_variants35genes_medal_assignment_2014feb20_ME_MW.txt
+# obsolete: data now in 2 files  :(
+#-gl-committee-medals2 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/committee_medals_2014MAR11_27genes.txt
+#-gl-committee-medals2 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/committee_medals_2014MAR11_8genes.txt
+#-gl-committee-medals2 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/committee_medals_latest_27genes.txt
+#-gl-committee-medals2 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/committee_medals_latest_8genes.txt
+#-dbsnp /nfs_exports/genomes/1/Homo_sapiens/GRCh37-lite/dbSNP/dbsnp137/snp137.txt
+-dbsnp /nfs_exports/genomes/1/Homo_sapiens/GRCh37-lite/dbSNP/dbsnp138/snp138.txt
+-gl-pcgp-population /nfs_exports/genomes/1/PCGP/BucketIntermediate/germlineSNVs/combined_2014jan/PCGP_merged_germlineSNVs_in_567_genes.txt.samples_kept
+-nhgri-brca1 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/NHGRI/brca1_data.txt
+-nhgri-brca2 /nfs_exports/genomes/1/projects/ClinicalSeq/germline/NHGRI/brca2_data.txt
+-gl-umd-flatfile /nfs_exports/genomes/1/projects/ClinicalSeq/germline/umd.be/full_2014_02_21/umd_combined.tab
+-gl-apc-flatfile /nfs_exports/genomes/1/projects/ClinicalSeq/germline/LOVD_APC/export_APC_chromium.liacs.nl_APC131203.tab
+-gl-msh2-flatfile /nfs_exports/genomes/1/projects/ClinicalSeq/germline/LOVD_MSH2/export_MSH2_chromium.liacs.nl_MSH2_131203.tab
+-gedi-recurrent-restrict /nfs_exports/genomes/1/projects/ClinicalSeq/PCGPRecurrentMutation/cancer_gene_SJ_mutation.txt
+-gedi-recurrent-restrict /nfs_exports/genomes/1/projects/ClinicalSeq/PCGPRecurrentMutation/non_cancer_gene_SJ_mutation_mod.txt
+# JZ 3/7/2014: restrictions for -gedi-recurrent list to remove false positives
+-hgmd-dm-mp-all /nfs_exports/genomes/1/PCGP/BucketIntermediate/PN/PCGP_germline_analysis/PublicDB/hgmd/export_hgmd_classification_dm_mp_everything.tab
+-clinvar-flatfile /nfs_exports/genomes/1/projects/ClinicalSeq/germline/GEDI_export/export_clinvar_2014_03_21.tab
+# export of GEDI version of ClinVar
+#-gl-current-committee-medals /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/PCGP_germline_variants31genes_validation_v5_mar27.txt
+-gl-current-committee-medals /nfs_exports/genomes/1/projects/ClinicalSeq/germline/committee_medals/PCGP_germline_variants31genes_final_mar27.txt
+# let's try this again
+-sv-genes-mapped-to-ger /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SV_genes_patched_to_GENE_EXON_REGION.txt
+-gold-genes-mapped-to-fb /nfs_exports/genomes/1/projects/ClinicalSeq/Gene4Report/GoldGene.lst.patched_for_FB.txt
+-sv-silver-genes-fb /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/SVCheck_silver_genes.txt
+-gl-reportable-genes /nfs_exports/genomes/1/PCGP/BucketIntermediate/germlineSNVs/genelists/31_reportable_genes.lst
+-gl-cnv /nfs_exports/genomes/1/projects/ClinicalSeq/FusionGenes/CNVCheck_germline.txt
+-gl-gold-cancer-ranges-ger /nfs_exports/genomes/1/PCGP/BucketIntermediate/germlineSNVs/genelists/cancer_related_genes_dec19.2013.lst.mapped_to_GER
